@@ -1,26 +1,33 @@
 const fetch = require("node-fetch");
 const prompt = require("prompt-sync")({sigint: true});
+const fs = require("fs");
 
 let response;
 (async () => {
     while(true) {
-        const url = prompt("URL > ");
-        const method = prompt("Method > ");
-        const headersPrompt = prompt("Headers > ");
-        let headers = {};
-        if(headersPrompt !== "") {
+        const option = parseInt(prompt("Manual Inputs (1) | From Quester File (2) > "));
+        let config = {};
+        if(option === 2) {
+            const path = prompt("Path > ");
+            config = JSON.parse(fs.readFileSync(path, "utf8"));
+        }
+        const url = config["url"] ?? prompt("URL > ");
+        const method = config["method"] ?? prompt("Method > ");
+        const headersPrompt = config["headers"] ?? prompt("Headers > ");
+        let headers = config["headers"] ?? {};
+        if(headersPrompt !== "" && headers === {}) {
             headers = JSON.parse(headersPrompt);
         }
         let data;
         if(method === "POST" || method === "PUT") {
-            data = prompt("Body > ");
+            data = config["body"] ?? prompt("Body > ");
             response = await fetch(url, {
                 method: method.toUpperCase(),
                 body: data,
                 headers: headers
             });
         } else {
-            data = prompt("Query > ");
+            data = config["query"] ?? prompt("Query > ");
             response = await fetch(`${url}?${data}`, {
                 method: method.toUpperCase(),
                 headers: headers
@@ -40,6 +47,25 @@ let response;
                 console.log(await response.text());
             } else {
                 console.error(await response.text());
+            }
+        }
+        if(Object.keys(config).length === 0 && config.constructor === Object) {
+            const saveOption = prompt("Save as quester config? (yes/no) > ").toLowerCase();
+            if(saveOption === "yes") {
+                const configJson = {
+                    url: url,
+                    method: method,
+                    headers: headers
+                };
+                if(method === "POST" || method === "PUT") {
+                    configJson["body"] = data;
+                } else {
+                    configJson["query"] = data;
+                }
+                if(!fs.existsSync("./questers")) {
+                    fs.mkdirSync("./questers");
+                }
+                fs.writeFileSync(`./questers/${method}-${url.replace(/^https?:\/\//, "").replaceAll("/", "-")}.json`, JSON.stringify(configJson));
             }
         }
         console.log();
