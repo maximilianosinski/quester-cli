@@ -39,7 +39,7 @@ let response;
             if(response.status >= 200 && response.status <= 399) {
                 console.log(await response.text());
             } else {
-                console.log(await response.text());
+                console.error(await response.text());
             }
         }
         console.log();
