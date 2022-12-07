@@ -15,7 +15,7 @@ let response;
         const method = config["method"] ?? prompt("Method > ");
         const headersPrompt = config["headers"] ?? prompt("Headers > ");
         let headers = config["headers"] ?? {};
-        if(headersPrompt !== "" && headers === {}) {
+        if(headersPrompt !== "" && Object.keys(headers).length === 0 && headers.constructor === Object) {
             headers = JSON.parse(headersPrompt);
         }
         let data;
@@ -50,7 +50,7 @@ let response;
             }
         }
         if(Object.keys(config).length === 0 && config.constructor === Object) {
-            const saveOption = prompt("Save as quester config? (yes/no) > ").toLowerCase();
+            const saveOption = prompt("Save as quester request? (yes/no) > ").toLowerCase();
             if(saveOption === "yes") {
                 const configJson = {
                     url: url,
@@ -65,7 +65,9 @@ let response;
                 if(!fs.existsSync("./questers")) {
                     fs.mkdirSync("./questers");
                 }
-                fs.writeFileSync(`./questers/${method}-${url.replace(/^https?:\/\//, "").replaceAll("/", "-")}.json`, JSON.stringify(configJson));
+                const path = `./questers/${method}-${url.replace(/^https?:\/\//, "").replaceAll("/", "-")}.json`;
+                fs.writeFileSync(path, JSON.stringify(configJson));
+                console.log(`Saved as: ${path}`);
             }
         }
         console.log();
