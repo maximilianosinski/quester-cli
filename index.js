@@ -13,10 +13,11 @@ let response;
         }
         const url = config["url"] ?? prompt("URL > ");
         const method = config["method"] ?? prompt("Method > ");
-        const headersPrompt = config["headers"] ?? prompt("Headers > ");
-        let headers = config["headers"] ?? {};
-        if(headersPrompt !== "" && Object.keys(headers).length === 0 && headers.constructor === Object) {
-            headers = JSON.parse(headersPrompt);
+        let headers = {};
+        if(config["headers"] === null) {
+            headers = JSON.parse(prompt("Headers > "));
+        } else {
+            headers = config["headers"];
         }
         let data;
         if(method === "POST" || method === "PUT") {
