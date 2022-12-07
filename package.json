@@ -1,0 +1,23 @@
+{
+  "name": "quester-cli",
+  "version": "1.0.0",
+  "description": "Test your API with simple HTTP/S requests.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maximilianosinski/quester-cli.git"
+  },
+  "keywords": [
+    "quester",
+    "cli"
+  ],
+  "author": "Maximilian Osinski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maximilianosinski/quester-cli/issues"
+  },
+  "homepage": "https://github.com/maximilianosinski/quester-cli#readme"
+}
